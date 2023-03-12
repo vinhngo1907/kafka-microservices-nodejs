@@ -6,3 +6,9 @@ Content-Type: application/json
     "email": "abc@gmail.com",
     "password":"123456"
 }
+
+###
+
+GET http://localhost:8081
+Content-Type: application/json
+###

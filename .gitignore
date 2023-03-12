@@ -4,12 +4,16 @@
 /.vscode
 
 /app1/dump.rdb
-/app1/package-lock.json
-/app1/npm-debug.log
-
-/app2/package-lock.json
 /app2/dump.rdb
+
+/app1/package-lock.json
+/app2/package-lock.json
+
+/app1/npm-debug.log
 /app2/npm-debug.log
+
+/app1/.env
+/app2/.env
 
 .DS_Store
 
