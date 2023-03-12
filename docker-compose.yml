@@ -12,9 +12,7 @@ services:
             - '9092:9092'
         environment:
             - KAFKA_BROKER_ID=1
-            - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
-            - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://127.0.0.1:9092
-            - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+            - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
             - ALLOW_PLAINTEXT_LISTENER=yes
         depends_on:
             - zookeeper
@@ -44,13 +42,15 @@ services:
             - PGADMIN_LISTEN_PORT=5050
         ports:
             - 5050:5050
+        depends_on:
+            - postgres
     app1:
         container_name: app1
         build: ./app1
         ports:
             - 8080:8080
         volumes:
-            - /app1:/app
+            - ./app1:/usr/src/app
         environment:
             - PORT=8080
             - POSTGRES_URL=postgres://postgres:aioshima@postgres:5432/example
@@ -65,7 +65,7 @@ services:
         ports:
             - 8081:8080
         volumes:
-            - /app2:/app
+            - ./app2:/usr/src/app
         environment:
             - PORT=8081
             - MONGO_URL=mongodb://mongo/example2

@@ -5,13 +5,13 @@ const sequelize = require("sequelize");
 app.use(express.json());
 
 const dbsAreRunning = () => {
-    const db = new sequelize(process.emit.POSTGRE_URL);
+    const db = new sequelize(`${process.env.POSTGRES_URL}`);
     const User = db.define('user', {
         name: sequelize.STRING,
         email: sequelize.STRING,
         password: sequelize.STRING,
     })
-    db.sync({force: true});
+    db.sync({ force: true });
 
     const client = new kafka.KafkaClient({ kafkaHost: process.env.KAFKA_BOOTSTRAP_SERVERS });
     const producer = new kafka.Producer(client);
