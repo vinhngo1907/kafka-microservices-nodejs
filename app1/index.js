@@ -1,8 +1,16 @@
 const express = require("express");
-const kafka = require("kafka-node");
+// const kafka = require("kafka-node");
+const { Kafka } = require("kafkajs");
 const app = express();
 const sequelize = require("sequelize");
 app.use(express.json());
+
+
+const kafka = new Kafka({
+    clientId: 'my-app',
+    brokers: [process.env.KAFKA_BOOTSTRAP_SERVERS, 'localhost:9093', 'localhost:9094']
+});
+const producer = kafka.producer();
 
 const dbsAreRunning = () => {
     const db = new sequelize(`${process.env.POSTGRES_URL}`);
@@ -13,18 +21,19 @@ const dbsAreRunning = () => {
     })
     db.sync({ force: true });
 
-    const client = new kafka.KafkaClient({ kafkaHost: process.env.KAFKA_BOOTSTRAP_SERVERS });
-    const producer = new kafka.Producer(client);
+    producer.connect();
+    // producer.on('ready', () => {
+    //     console.log("Producer ready");
 
-    producer.on('ready', () => {
-        console.log("Producer ready");
-        app.post("/", (req, res) => {
-            producer.send([{ topic: process.env.KAFKA_TOPIC, messages: JSON.stringify(req.body) }], async (err, data) => {
-                if (err)
-                    throw err;
-                await User.create(req.body);
-                res.send(req.body)
-            });
+    // });
+    app.post("/", (req, res) => {
+        producer.send({ topic: process.env.KAFKA_TOPIC, messages: [{ value: JSON.stringify(req.body) }] }, async (err, data) => {
+            if (err) {
+                console.log(err);
+                throw err;
+            }
+            await User.create(req.body);
+            res.status(200).json({ data: req.body, message: "Created new user successfully!" })
         });
     });
 }
