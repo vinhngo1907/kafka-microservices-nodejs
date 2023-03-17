@@ -21,61 +21,61 @@ services:
             - ALLOW_PLAINTEXT_LISTENER=yes
         depends_on:
             - zookeeper
-    mongo:
-        container_name: mongo
-        image: mongo
-        ports:
-            - 27017:27017
-        volumes:
-            - ./data/mongo:/data/db
-    postgres:
-        container_name: postgres
-        image: postgres
-        ports:
-            - 5432:5432
-        volumes:
-            - ./data/postgres:/var/lib/postgresql/data
-        environment:
-            - POSTGRES_USER=postgres
-            - POSTGRES_PASSWORD=aioshima
-            - POSTGRES_DB=example
-    pg-admin:
-        image: dpage/pgadmin4:6
-        environment:
-            - PGADMIN_DEFAULT_EMAIL=admin@email.com
-            - PGADMIN_DEFAULT_PASSWORD=admin123123
-            - PGADMIN_LISTEN_PORT=5050
-        ports:
-            - 5050:5050
-        depends_on:
-            - postgres
-    app1:
-        container_name: app1
-        build: ./app1
-        ports:
-            - 8080:8080
-        volumes:
-            - ./app1:/usr/src/app
-        environment:
-            - PORT=8080
-            - POSTGRES_URL=postgres://postgres:aioshima@postgres:5432/example
-            - KAFKA_BOOTSTRAP_SERVERS=localhost:9092
-            - KAFKA_TOPIC=topic1
-        depends_on:
-            - postgres
-            - kafka
-    app2:
-        container_name: app2
-        build: ./app2
-        ports:
-            - 8081:8080
-        volumes:
-            - ./app2:/usr/src/app
-        environment:
-            - PORT=8081
-            - MONGO_URL=mongodb://mongo/example2
-            - KAFKA_BOOTSTRAP_SERVERS=localhost:9092
-            - KAFKA_TOPIC=topic1
-        depends_on:
-            - mongo
-            - kafka
+    # mongo:
+    #     container_name: mongo
+    #     image: mongo
+    #     ports:
+    #         - 27017:27017
+    #     volumes:
+    #         - ./data/mongo:/data/db
+    # postgres:
+    #     container_name: postgres
+    #     image: postgres
+    #     ports:
+    #         - 5432:5432
+    #     volumes:
+    #         - ./data/postgres:/var/lib/postgresql/data
+    #     environment:
+    #         - POSTGRES_USER=postgres
+    #         - POSTGRES_PASSWORD=aioshima
+    #         - POSTGRES_DB=example
+    # pg-admin:
+    #     image: dpage/pgadmin4:6
+    #     environment:
+    #         - PGADMIN_DEFAULT_EMAIL=admin@email.com
+    #         - PGADMIN_DEFAULT_PASSWORD=admin123123
+    #         - PGADMIN_LISTEN_PORT=5050
+    #     ports:
+    #         - 5050:5050
+    #     depends_on:
+    #         - postgres
+    # app1:
+    #     container_name: app1
+    #     build: ./app1
+    #     ports:
+    #         - 8080:8080
+    #     volumes:
+    #         - ./app1:/usr/src/app
+    #     environment:
+    #         - PORT=8080
+    #         - POSTGRES_URL=postgres://postgres:aioshima@postgres:5432/example
+    #         - KAFKA_BOOTSTRAP_SERVERS=localhost:9092
+    #         - KAFKA_TOPIC=topic1
+    #     depends_on:
+    #         - postgres
+    #         - kafka
+    # app2:
+    #     container_name: app2
+    #     build: ./app2
+    #     ports:
+    #         - 8081:8080
+    #     volumes:
+    #         - ./app2:/usr/src/app
+    #     environment:
+    #         - PORT=8081
+    #         - MONGO_URL=mongodb://mongo/example2
+    #         - KAFKA_BOOTSTRAP_SERVERS=localhost:9092
+    #         - KAFKA_TOPIC=topic1
+    #     depends_on:
+    #         - mongo
+    #         - kafka
