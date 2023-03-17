@@ -1,4 +1,4 @@
-POST http://localhost:8080
+POST http://localhost:8080/api/send-message
 Content-Type: application/json
 
 {
