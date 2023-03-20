@@ -10,7 +10,12 @@ const dbsAreRunning = async () => {
 
     const kafka = new Kafka({
         clientId: 'my-app',
-        brokers: [`${process.env.KAFKA_BOOTSTRAP_SERVERS}`, 'localhost:9093', 'localhost:9094']
+        brokers: [`${process.env.KAFKA_BOOTSTRAP_SERVERS}`, 'localhost:9093', 'localhost:9094'],
+        sasl: {
+            mechanism: 'plain',
+            username: process.env.CLIENT_USER,
+            password: process.env.CLIENT_PASSWORD
+        },
     });
 
     const consumer = kafka.consumer({ groupId: 'test-group' });

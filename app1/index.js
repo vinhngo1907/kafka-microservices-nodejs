@@ -7,7 +7,12 @@ app.use(express.json());
 
 const kafka = new Kafka({
     clientId: 'my-app',
-    brokers: [process.env.KAFKA_BOOTSTRAP_SERVERS]
+    brokers: [process.env.KAFKA_BOOTSTRAP_SERVERS],
+    sasl: {
+        mechanism: 'plain',
+        username: process.env.CLIENT_USER,
+        password: process.env.CLIENT_PASSWORD
+    },
 });
 
 const db = new sequelize(`${process.env.POSTGRES_URL}`);

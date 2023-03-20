@@ -1,7 +1,8 @@
 # dependencies
+/.vscode
+
 /app1/node_modules
 /app2/node_modules
-/.vscode
 
 /app1/dump.rdb
 /app2/dump.rdb
@@ -18,3 +19,4 @@
 .DS_Store
 
 data
+kafka
