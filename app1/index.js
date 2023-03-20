@@ -1,9 +1,16 @@
+require("dotenv").config();
 const express = require("express");
-// const kafka = require("kafka-node");
 const { Kafka } = require("kafkajs");
 const app = express();
 const sequelize = require("sequelize");
 app.use(express.json());
+
+const db = new sequelize(process.env.POSTGRES_URL);
+const User = db.define('user', {
+    name: sequelize.STRING,
+    email: sequelize.STRING,
+    password: sequelize.STRING,
+});
 
 const kafka = new Kafka({
     clientId: 'my-app',
@@ -15,25 +22,16 @@ const kafka = new Kafka({
     },
 });
 
-const db = new sequelize(`${process.env.POSTGRES_URL}`);
-const User = db.define('user', {
-    name: sequelize.STRING,
-    email: sequelize.STRING,
-    password: sequelize.STRING,
-});
-db.sync({ force: true });
+const producer = kafka.producer()
+async function KafkaConnect() {
+  await producer.connect()
+};
+KafkaConnect();
 
-
-// Connect to the Kafka broker
-async function connect() {
-    await kafka.connect();
-    console.log('Connected to Kafka');
-}
+// db.sync({ force: true });
 
 // Send a message to Kafka
 async function sendMessage(message) {
-    const producer = kafka.producer();
-    await producer.connect();
     await producer.send({ topic: process.env.KAFKA_TOPIC, messages: [{ value: JSON.stringify(message) }] }, async (err, data) => {
         if (err) {
             console.log(err);
@@ -41,15 +39,15 @@ async function sendMessage(message) {
         }
     })
     await producer.disconnect();
-    console.log(`Sent message: ${message}`);
+    console.log(`Sent message: ${JSON.stringify(message)}`);
 }
 
 app.post("/api/send-message", async (req, res) => {
     try {
         await sendMessage(req.body);
 
-        const newUser = await User.create();
-        res.status(200).json({ msg: "Created data successfully", user: newUser });
+        const newUser = await User.create(req.body);
+        res.status(200).json({ msg: "Created data successfully", user: {...newUser._doc} });
     } catch (error) {
         console.log(error);
         return res.status(500).json({ msg: error.message });
@@ -58,5 +56,5 @@ app.post("/api/send-message", async (req, res) => {
 
 app.listen(process.env.PORT, () => {
     console.log(`Server started on port ${process.env.PORT}`);
-    // connect().catch(console.error);
+    KafkaConnect();
 });

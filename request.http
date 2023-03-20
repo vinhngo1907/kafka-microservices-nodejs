@@ -2,8 +2,8 @@ POST http://localhost:8080/api/send-message
 Content-Type: application/json
 
 {
-    "name":"Wibu Coder",
-    "email": "abc123@gmail.com",
+    "name":"Yua Mikami",
+    "email": "jav@gmail.com",
     "password":"123456"
 }
 

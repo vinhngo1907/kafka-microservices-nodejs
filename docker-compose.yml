@@ -6,8 +6,6 @@ services:
             - '9092:9092'
         volumes:
             - ./kafka:/bitnami/kafka
-            # - ~/kafka/data/zookeeper_data:/var/lib/zookeeper/data
-            # - ~/kafka/data/zookeeper_log:/var/lib/zookeeper/log
         environment:
             - BITNAMI_DEBUG=true
             - KAFKA_ENABLE_KRAFT=yes
@@ -47,8 +45,8 @@ services:
     pg-admin:
         image: dpage/pgadmin4:6
         environment:
-            - PGADMIN_DEFAULT_EMAIL=admin@email.com
-            - PGADMIN_DEFAULT_PASSWORD=admin123123
+            - PGADMIN_DEFAULT_EMAIL=${PG_USER}
+            - PGADMIN_DEFAULT_PASSWORD=${PG_PASS}
             - PGADMIN_LISTEN_PORT=5050
         ports:
             - 5050:5050
@@ -64,7 +62,7 @@ services:
         environment:
             - PORT=8080
             - POSTGRES_URL=postgres://postgres:aioshima@postgres:5432/example
-            - KAFKA_BOOTSTRAP_SERVERS=localhost:9092
+            - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
             - KAFKA_TOPIC=topic1
             - CLIENT_USER=${CLIENT_USER}
             - CLIENT_PASSWORD=${CLIENT_PASSWORD}
@@ -81,7 +79,7 @@ services:
         environment:
             - PORT=8081
             - MONGO_URL=mongodb://mongo/example2
-            - KAFKA_BOOTSTRAP_SERVERS=localhost:9092
+            - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
             - KAFKA_TOPIC=topic1
             - CLIENT_USER=${CLIENT_USER}
             - CLIENT_PASSWORD=${CLIENT_PASSWORD}
